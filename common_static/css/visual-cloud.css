@@ -1,0 +1,17 @@
+#homeCarouselIndicators .carousel-item img {
+    width: 100%;
+    height: 100%;
+}
+
+#homeAttributesBrief {
+    margin-top: 10px;
+}
+
+#homeAttributesBrief .attribute-brief {
+    text-align: center;
+}
+
+#homeAttributesBrief .attribute-brief img {
+    width: 200px;
+    height: 200px;
+}

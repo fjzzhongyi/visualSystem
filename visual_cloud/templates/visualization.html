@@ -1,0 +1,207 @@
+{% extends 'basic_framework.html' %}
+
+{% block title%}visualCloud-可视化{% endblock %}
+
+{% block breadcrumb_li %}
+    <li class="breadcrumb-item active">可视化</li>
+    <li class="breadcrumb-item active">{{ alg.visual_type }}</li>
+    <li class="breadcrumb-item active">{{ alg.v_name }}</li>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-xl-3 col-sm-6 mb-3">
+            <div class="card card-inverse card-primary o-hidden h-100">
+                <div class="card-block">
+                    <div class="card-block-icon">
+                        <i class="fa fa-fw fa-book"></i>
+                    </div>
+                    <div class="mr-5">
+                        算法介绍与说明
+                    </div>
+                </div>
+                <a href="#" class="card-footer clearfix small z-1" data-toggle="modal" data-target="#algDesModal">
+                    <span class="float-left">详情</span>
+                    <span class="float-right"><i class="fa fa-angle-right"></i></span>
+                </a>
+            </div>
+            <div class="modal fade" id="algDesModal" tabindex="-1" role="dialog" aria-labelledby="algDesLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document" style="margin-left: 25%;">
+                    <div class="modal-content" style="width: 900px;">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="algDesLabel">算法介绍与说明</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            {% block algorithm_illustration %}{% endblock %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-3">
+            <div class="card card-inverse card-success o-hidden h-100">
+                <div class="card-block">
+                    <div class="card-block-icon">
+                        <i class="fa fa-fw fa-database"></i>
+                    </div>
+                    <div class="mr-5">
+                        数据介绍与说明
+                    </div>
+                </div>
+                <a href="#" class="card-footer clearfix small z-1" data-toggle="modal" data-target="#dataDesModal">
+                    <span class="float-left">详情</span>
+                    <span class="float-right"><i class="fa fa-angle-right"></i></span>
+                </a>
+            </div>
+            <div class="modal fade" id="dataDesModal" tabindex="-1" role="dialog" aria-labelledby="dataDesLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document" style="margin-left: 25%;">
+                    <div class="modal-content" style="width: 900px;">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="dataDesLabel">数据介绍与说明</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            {% block data_illustration %}{% endblock %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-3">
+            <div class="card card-inverse card-warning o-hidden h-100">
+                <div class="card-block">
+                    <div class="card-block-icon">
+                        <i class="fa fa-fw fa-dashboard"></i>
+                    </div>
+                    <div class="mr-5">
+                        CPU使用情况
+                    </div>
+                </div>
+                <a href="#" class="card-footer clearfix small z-1" data-toggle="modal" data-target="#cpuModal">
+                    <span class="float-left">详情</span>
+                    <span class="float-right"><i class="fa fa-angle-right"></i></span>
+                </a>
+            </div>
+            <div class="modal fade" id="cpuModal" tabindex="-1" role="dialog" aria-labelledby="cpuModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document" style="margin-left: 25%;">
+                    <div class="modal-content" style="width: 900px;">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="cpuModalLabel">CPU使用情况</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="cpuChart" style="width: 868px; height: 500px;text-align: center;">
+                                <div style="padding-top: 25%">未运行过算法</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-3">
+            <div class="card card-inverse card-danger o-hidden h-100">
+                <div class="card-block">
+                    <div class="card-block-icon">
+                        <i class="fa fa-fw fa-cubes"></i>
+                    </div>
+                    <div class="mr-5">
+                        内存使用情况
+                    </div>
+                </div>
+                <a href="#" class="card-footer clearfix small z-1" data-toggle="modal" data-target="#memModal">
+                    <span class="float-left">详情</span>
+                    <span class="float-right"><i class="fa fa-angle-right"></i></span>
+                </a>
+            </div>
+            <div class="modal fade" id="memModal" tabindex="-1" role="dialog" aria-labelledby="memModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document" style="margin-left: 25%;">
+                    <div class="modal-content" style="width: 900px;">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="memModalLabel">内存使用情况</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="memChart" style="width: 868px; height: 500px;text-align: center;">
+                                <div style="padding-top: 25%">未运行过算法</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="jumbotron">
+        <h1 class="display-3">{{ alg.v_name }}</h1>
+        <p class="lead">{{ alg.desc }}</p>
+        <hr class="my-4">
+        <div style="background-color: white">
+            <div id="chart" style="width: 100%; height: 750px;"></div>
+        </div>
+        <hr class="my-4">
+        <div id="dataInputArea">
+            {% block data_input_area %}
+                <form id="dataInputForm" name="input">
+                    {% csrf_token %}
+                    <input name="alg_name" value="{{ alg.name }}" hidden>
+                    <input name="alg_visual_type" value="{{ alg.visual_type }}" hidden>
+                    {% for parm, parm_info in alg.form.items %}
+                        {% if parm_info.hidden %}
+                            <input name="{{ parm }}" value="{{ parm_info.default }}" hidden>
+                        {% else %}
+                            <div class="form-group">
+                                <label for="{{ parm_info.elem_id }}">{{ parm_info.v_name }}</label>
+                                {% if parm_info.select %}
+                                    <select name="{{ parm }}" id="{{ parm_info.elem_id }}" class="form-control">
+                                        {% for option in parm_info.options %}
+                                            <option>{{ option }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% else %}
+                                    <input name="{{ parm }}" type="{{ parm_info.type }}" class="form-control" id="{{ parm_info.elem_id }}" placeholder="{{ parm_info.default }}" value="{{ parm_info.default }}" step="0.01">
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </form>
+                <button class="btn btn-primary" onclick="submitAlgData()">提交</button>
+            {% endblock data_input_area %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $('.sidebar-nav li').removeClass('active');
+        $('#visualCollapseMulti').collapse('show');
+        $('#{{ alg.visual_type }}CollapseMulti').collapse('show');
+        $('#{{ alg.elem_id }}').addClass('active');
+
+        var chart = echarts.init(document.getElementById('chart'));
+        createDemoChart(chart, '{{ alg.visual_type }}');
+
+        function submitAlgData() {
+            chart.showLoading();
+            $.post(
+                '{% url 'submit_alg_data' %}',
+                $('#dataInputForm').serialize()
+            ).done(function (data) {
+                chart.clear();
+                createChart(chart, '{{ alg.visual_type }}', data.chart_data);
+                createCPULine(echarts.init(document.getElementById('cpuChart')), data.cpu_chart_data);
+                createMemLine(echarts.init(document.getElementById('memChart')), data.mem_chart_data);
+            }).fail(function (xhr, status) {
+                alert('失败: ' + xhr.status + ', 原因: ' + status);
+            }).always(function () {
+                chart.hideLoading();
+            });
+        }
+    </script>
+{% endblock %}

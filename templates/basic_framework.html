@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>{% block title %}visualCloud{% endblock %}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="/static/css/font-awesome/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Plugin CSS -->
+    <link href="/static/css/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/css/sb-admin/sb-admin.css" rel="stylesheet">
+    <link href="/static/css/visual-cloud.css" rel="stylesheet">
+
+    <!-- ECharts core JavaScript -->
+    <script src="/static/js/echarts/echarts.js"></script>
+    <script src="/static/js/echarts/map/china.js"></script>
+
+</head>
+
+<body id="page-top">
+
+    <!-- Navigation -->
+    <nav id="mainNav" class="navbar static-top navbar-toggleable-md navbar-inverse bg-inverse">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#leftNavbar" aria-controls="leftNavbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="{% url 'home' %}">visualCloud</a>
+        <div class="collapse navbar-collapse" id="leftNavbar">
+            <!-- Left nav bar -->
+            <ul class="sidebar-nav navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'home' %}"><i class="fa fa-fw fa-home"></i> 首页</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#visualCollapseMulti"><i class="fa fa-fw fa-area-chart"></i> 子图检测</a>
+                    <ul class="sidebar-second-level collapse" id="visualCollapseMulti">
+                        {% for visual_type, type_algs in algs_info.items %}
+                            <li>
+                                <a class="nav-link-collapse collapsed" data-toggle="collapse" href="#{{ visual_type }}CollapseMulti">{{ visual_type }}</a>
+                                <ul class="sidebar-third-level collapse" id="{{ visual_type }}CollapseMulti">
+                                    {% for alg_name, alg_info in type_algs.items %}
+                                    <li id="{{ alg_info.elem_id }}" class="nav-item">
+                                        <a class="nav-link" href="{% url 'visual_alg' visual_type alg_name%}">{{ alg_info.v_name }}</a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#appExamplesCollapseMulti"><i class="fa fa-fw fa-pie-chart"></i> 应用实例</a>
+                    <ul class="sidebar-second-level collapse" id="appExamplesCollapseMulti">
+                        <li id="haze-forecast">
+                            <a class="nav-link" href="{% url 'haze_forecast' %}"> 雾霾检测</a>
+                        </li>
+                    </ul>
+                </li>
+                <li id="management" class="nav-item">
+                    <a class="nav-link" href="{% url 'management' %}"><i class="fa fa-fw fa-cog"></i> 管理</a>
+                </li>
+                <li id="about" class="nav-item">
+                    <a class="nav-link" href="{% url 'about' %}"><i class="fa fa-fw fa-info-circle"></i> 关于</a>
+                </li>
+            </ul>
+            <!-- Top nav bar -->
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle mr-lg-2" href="#" id="messagesDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-fw fa-envelope"></i> <span class="hidden-lg-up">消息<span class="badge badge-pill badge-primary">1</span></span>
+                        <span class="new-indicator text-primary hidden-md-down"><i class="fa fa-fw fa-circle"></i><span class="number">1</span></span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="messagesDropdown">
+                        <h6 class="dropdown-header">新消息</h6>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">
+                            <strong>通知1</strong> <span class="small float-right text-muted">00:00 AM</span>
+                            <div class="dropdown-message small">这是一个测试通知</div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item small" href="#">
+                            查看所有消息
+                        </a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle mr-lg-2" href="#" id="alertsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-fw fa-bell"></i> <span class="hidden-lg-up">提醒<span class="badge badge-pill badge-warning">1</span></span>
+                        <span class="new-indicator text-warning hidden-md-down"><i class="fa fa-fw fa-circle"></i><span class="number">1</span></span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="alertsDropdown">
+                        <a class="dropdown-item" href="#">提醒1</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fa fa-fw fa-bug"></i>反馈</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="content-wrapper py-3">
+
+        <div class="container-fluid">
+            {% block entire_content %}
+            <!-- Breadcrumbs -->
+            <ol class="breadcrumb">
+                {% block breadcrumb_li %}{% endblock %}
+            </ol>
+        
+            {% block content %}
+            <!-- Icon Cards -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <i class="fa fa-area-chart"></i> Area Chart Example
+                </div>
+                <div class="card-block">
+                    <canvas id="myAreaChart" width="100%" height="30"></canvas>
+                </div>
+                <div class="card-footer small text-muted">
+                    Updated yesterday at 11:59 PM
+                </div>
+            </div>
+            {% endblock %}
+            {% endblock %}
+        </div>
+        <!-- /.container-fluid -->
+
+    </div>
+    <!-- /.content-wrapper -->
+
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fa fa-chevron-up"></i>
+    </a>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="/static/js/jquery/jquery.min.js"></script>
+    <script src="/static/js/tether/tether.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="/static/js/jquery-easing/jquery.easing.min.js"></script>
+    <script src="/static/js/chart.js/Chart.min.js"></script>
+    <script src="/static/js/datatables/jquery.dataTables.js"></script>
+    <script src="/static/js/datatables/dataTables.bootstrap4.js"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="/static/js/sb-admin/sb-admin.min.js"></script>
+
+    <!-- visualCloud main JavaScript -->
+    <script src="/static/js/visual-cloud.js"></script>
+    {% block script %}{% endblock %}
+</body>
+
+</html>

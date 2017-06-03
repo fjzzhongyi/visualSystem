@@ -1,0 +1,96 @@
+{% extends 'app_examples.html' %}
+
+{% block breadcrumb_name %}雾霾检测{% endblock %}
+{% block algorithm_illustration %}无{% endblock %}
+{% block data_illustration %}无{% endblock %}
+{% block example_name %}雾霾检测{% endblock %}
+{% block example_brief %}雾霾检测展示。{% endblock %}
+
+{% block script %}
+    <script>
+        $('.sidebar-nav li').removeClass('active');
+        $('#appExamplesCollapseMulti').collapse('show');
+        $('#haze-forecast').addClass('active');
+        
+        var chart = echarts.init(document.getElementById('chart'));
+        var option = {
+            baseOption: {
+                title : {
+                    text: 'Haze Detection Map',
+                    left: 'center'
+                },
+                tooltip : {
+                    trigger: 'item'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data:['TruthLabel']
+                },
+                visualMap: {
+                    min: 0,
+                    max: 5,
+                    show: false
+                },
+                timeline: {
+                    playInterval: 200,
+                    left: 0,
+                    right: 0,
+                    symbolSize: 5,
+                    tooltip: {
+                        formatter: function (params) {
+                            if (typeof(params.data) === 'string')
+                                return params.data;
+                            else
+                                return params.data.value;
+                        }
+                    },
+                    label: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data: []
+                },
+                toolbox: {
+                    show: true,
+                    orient : 'vertical',
+                    left: 'right',
+                    top: 'center',
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: true, readOnly: false},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                series : [
+                    {
+                        name: 'TruthLabel',
+                        type: 'map',
+                        mapType: 'china',
+                        roam: false,
+                        label: {
+                            normal: {
+                                show: false
+                            },
+                            emphasis: {
+                                show: true
+                            }
+                        }
+                    }
+                ]
+            },
+            options: []
+        };
+        $.get('{% url 'get_haze_forecast_chart_data' %}').done(function (data) {
+            option.baseOption.legend.data = option.baseOption.legend.data.concat(data.algorithm_names)
+            option.baseOption.series = option.baseOption.series.concat(data.algorithm_series)
+            option.baseOption.timeline.data = data.timeline_data;
+            option.options = data.options;
+            chart.setOption(option);
+        }).fail(function (xhr, status) {
+            alert('失败: ' + xhr.status + ', 原因: ' + status);
+        });
+    </script>
+{% endblock %}

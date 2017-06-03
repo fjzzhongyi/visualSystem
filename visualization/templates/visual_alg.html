@@ -1,0 +1,94 @@
+{% extends 'visualization.html' %}
+
+{% block algorithm_illustration %}
+<h1 id="nphgs-">NPHGS算法</h1>
+<h2 id="-non-parametric-heterogeneous-graph-scan-"><em>Non-Parametric Heterogeneous Graph Scan</em></h2>
+<ul>
+<li><p><strong>NPHGS</strong>是针对异构网络提出的事件检测的方法。</p>
+<ol>
+<li><strong>NPHGS</strong>首先先把任何输入网络当成一种“感知网”。网络上的每个节点都类似于传感器，可以感知到节点的周围环境，以经验异常值(p-value)来向上汇报节点的异常情况。</li><li>每个节点都具有了异常值，可以通过最大化非参数扫描统计函数来找到最异常的节点集合（或节点簇）。</li><li>最后可以利用节点带有的地理位置信息、时间信息来对解释每一个检测到的节点簇。</li></ol>
+</li><li><p><strong>NPHGS Graph Scan</strong>先在每种类型的节点中选出k个经验异常值最小（代表异常程度大）的节点选出，从这些点分别去寻找相应的邻接点，如果邻接节点能够使节点集合的异常分数更高，则进行“纳新”，当邻接节点都被“拒绝”的时候，停止寻找过程。最后通过对比节点集合的异常值，找出最异常的联通子图。</p>
+</li></ul>
+<hr>
+<h2 id="-"><em>接口定义</em></h2>
+<table border="1">
+   <tr>
+      <td>模块名</td>
+      <td>sdspark.NPHGS.NPHGS</td>
+   </tr>
+   <tr>
+      <td>函数体</td>
+      <td>GraphScan(Graph, Value, alpha_max='0.15', npss='BJ')</td>
+   </tr>
+   <tr>
+      <td>参数</td>
+      <td>参数名</td>
+      <td>定义</td>
+      <td>类型</td>
+      <td>备注</td>
+   </tr>
+   <tr>
+      <td></td>
+      <td>Graph</td>
+      <td>图结构</td>
+      <td>dict</td>
+      <td></td>
+   </tr>
+   <tr>
+      <td></td>
+      <td>Value</td>
+      <td>点的属性列表</td>
+      <td>dict</td>
+      <td></td>
+   </tr>
+   <tr>
+      <td></td>
+      <td>npss</td>
+      <td>非参数扫描统计函数</td>
+   </tr>
+   <tr>
+      <td></td>
+      <td>alpha_max</td>
+      <td>异常值阈值</td>
+   </tr>
+   <tr>
+      <td>返回值</td>
+      <td>ResultNodes</td>
+      <td>异常子图</td>
+      <td>list</td>
+      <td>子图的节点</td>
+   </tr>
+</table>
+{% endblock %}
+{% block data_illustration %}
+<h1 id="rdd-">RDD数据规格</h1>
+<p>规定的<strong>RDD</strong>的规格如下：</p>
+<ul>
+<li>对于在计算过程中，只涉及到节点的属性或权值，我们采用键值对（节点n，[节点x|节点x与节点n相邻接]）作为RDD的一条记录的规格，即RDD的每一条记录都记录了一个节点及其邻接关系，其中键为节点，值为与该节点存在邻接关系的节点的列表。</li></ul>
+<ul>
+<li>对于考虑边的权值的算法，我们亦采用键值对的形式，即（边的编号，（边的一端节点，边的另一端节点））作为RDD的一条记录的规格。</li></ul>
+<ul>
+<li>对于节点或边的经验异常值(p-value)或者权值(weight),我们则按照（节点/边的编号，该节点或边的属性值）作为RDD的一条记录的规格。</li></ul>
+<ul>
+<li>对于返回的结果，对于静态图，我们定义[节点集合]作为RDD的一条记录的规格，而对于动态图，我们定义(序号，[节点集合])作为RDD的一条记录的规格。</li></ul>
+<hr>
+<h1 id="-">文件数据规范</h1>
+<p>根据算法库的输入需求，考虑到用户的使用习惯和常见的数据规范，系统规定输入文件和输出文件的统一格式为json文件，其中必有&quot;nodes&quot;，&quot;edges&quot;字段用于存储节点和边的数据，&quot;value&quot;字段为节点或边的属性值，&quot;weight&quot;字段为边的权值，&quot;selected&quot;字段值表示该节点是否为异常节点（输入文件此字段值默认为False），&quot;source&quot;和&quot;target&quot;分别为边的起点和终点。样例如下：</p>
+<pre><code>{
+    &quot;name&quot;: &quot;haze&quot;,
+    &quot;time&quot;: &quot;2000-01-01_12-01-01&quot;,
+    &quot;nodes&quot;: [
+        {&quot;name&quot;: &quot;1&quot;, &quot;value&quot;: 0.1, &quot;selected&quot;: True},
+        {&quot;name&quot;: &quot;2&quot;, &quot;value&quot;: 0.1, &quot;selected&quot;: False},
+        ...
+    ],
+    &quot;edges&quot;: [
+        {&quot;source&quot;: &quot;1&quot;, &quot;target&quot;: &quot;2&quot;, &quot;value&quot;: 0.15, &quot;weight&quot;: 0.5},
+        ...
+    ],
+    &quot;remark&quot;:{
+        ...
+    }
+}
+</code></pre>
+{% endblock %}
