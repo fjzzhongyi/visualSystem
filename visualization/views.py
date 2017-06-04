@@ -61,7 +61,7 @@ def submit_alg_data(request):
             os.makedirs(alg_output_dir)
         except FileExistsError as e:
             print(e)
-        subprocess.run(exec_alg_cmd)
+        subprocess.run(exec_alg_cmd,shell=True)
 
     # Get result.
     options = []
